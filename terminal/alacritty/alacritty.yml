@@ -1,0 +1,72 @@
+window:
+  dimensions:
+    columns: 0
+    lines: 0
+
+  position:
+    x: 0
+    y: 0
+
+  padding:
+    x: 5
+    y: 5
+
+  dynamic_padding: false
+
+  decorations: full
+
+  startup_mode: Maximized
+
+title: Alacritty
+
+history: 10000
+
+multiplier: 3
+
+font:
+  normal:
+    family: "Cascadia Mono"
+
+  size: 14.0
+
+colors:
+  primary:
+    background: "#1d2021"
+    foreground: "#d5c4a1"
+
+  cursor:
+    text: "#1d2021"
+    cursor: "#d5c4a1"
+
+  normal:
+    black: "#1d2021"
+    red: "#fb4934"
+    green: "#b8bb26"
+    yellow: "#fabd2f"
+    blue: "#83a598"
+    magenta: "#d3869b"
+    cyan: "#8ec07c"
+    white: "#d5c4a1"
+
+  # Bright colors
+  bright:
+    black: "#665c54"
+    red: "#fb4934"
+    green: "#b8bb26"
+    yellow: "#fabd2f"
+    blue: "#83a598"
+    magenta: "#d3869b"
+    cyan: "#8ec07c"
+    white: "#fbf1c7"
+
+  indexed_colors:
+    - { index: 16, color: "#fe8019" }
+    - { index: 17, color: "#d65d0e" }
+    - { index: 18, color: "#3c3836" }
+    - { index: 19, color: "#504945" }
+    - { index: 20, color: "#bdae93" }
+    - { index: 21, color: "#ebdbb2" }
+shell:
+  program: wsl
+working_directory: //wsl$/Arch/home/hy
+

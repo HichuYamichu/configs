@@ -1,5 +1,6 @@
-set -x DISPLAY 192.168.1.100:0 
-set -U fish_user_paths /usr/local/sbin /usr/local/go/bin /usr/local/bin /usr/bin /bin ~/.cargo ~/.cargo/bin ~/go/bin
+set DISPLAY (grep nameserver /etc/resolv.conf | sed 's/nameserver //'):0
+set EDITOR nvim
+set -U fish_user_paths /usr/local/include /usr/local/sbin /usr/local/go/bin /usr/local/bin /usr/bin /bin ~/.cargo ~/.cargo/bin ~/go/bin
 set fish_greeting
 
 status --is-interactive; and source (jump shell fish | psub)

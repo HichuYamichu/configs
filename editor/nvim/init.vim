@@ -127,6 +127,7 @@ set printoptions=paper:letter
 " Always draw sign column. Prevent buffer moving when adding/deleting sign.
 set signcolumn=yes
 set clipboard+=unnamedplus
+set formatoptions-=cro
 
 " Sane splits
 set splitright
@@ -213,6 +214,12 @@ cnoremap <C-c> <Esc>
 onoremap <C-c> <Esc>
 lnoremap <C-c> <Esc>
 tnoremap <C-c> <Esc>
+
+" Move line up/down
+nnoremap <S-Up> :m-2<CR>
+nnoremap <S-Down> :m+<CR>
+inoremap <S-Up> <Esc>:m-2<CR>
+inoremap <S-Down> <Esc>:m+<CR>
 
 " Jump to start and end of line using the home row keys
 map H ^

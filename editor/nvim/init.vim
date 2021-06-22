@@ -1,4 +1,4 @@
-set shell=/bin/bash
+" set shell=/bin/bash
 let mapleader = "\<Space>"
 
 " =============================================================================
@@ -6,13 +6,9 @@ let mapleader = "\<Space>"
 " =============================================================================
 call plug#begin('~/.vim/plugged')
 
-Plug 'ciaranm/securemodelines'
 Plug 'editorconfig/editorconfig-vim'
-Plug 'justinmk/vim-sneak'
-
 Plug 'itchyny/lightline.vim'
 Plug 'machakann/vim-highlightedyank'
-Plug 'andymass/vim-matchup'
 Plug 'chriskempson/base16-vim'
 
 " Fuzzy finder
@@ -29,37 +25,13 @@ Plug 'stephpy/vim-yaml'
 Plug 'rust-lang/rust.vim'
 Plug 'rhysd/vim-clang-format'
 Plug 'dag/vim-fish'
-Plug 'godlygeek/tabular'
 Plug 'plasticboy/vim-markdown'
 
 call plug#end()
 
-if has('nvim')
-    set guicursor=n-v-c:block-Cursor/lCursor-blinkon0,i-ci:ver25-Cursor/lCursor,r-cr:hor20-Cursor/lCursor
-    set inccommand=nosplit
-    noremap <C-q> :confirm qall<CR>
-end
-
-set background=dark
-let base16colorspace=256
-colorscheme base16-gruvbox-dark-hard
 syntax on
-" Brighter comments
-call Base16hi("Comment", g:base16_gui09, "", g:base16_cterm09, "", "", "")
-
-" Plugin settings
-let g:secure_modelines_allowed_items = [
-                \ "textwidth",   "tw",
-                \ "softtabstop", "sts",
-                \ "tabstop",     "ts",
-                \ "shiftwidth",  "sw",
-                \ "expandtab",   "et",   "noexpandtab", "noet",
-                \ "filetype",    "ft",
-                \ "foldmethod",  "fdm",
-                \ "readonly",    "ro",   "noreadonly", "noro",
-                \ "rightleft",   "rl",   "norightleft", "norl",
-                \ "colorcolumn"
-                \ ]
+colorscheme froob
+" colorscheme base16-gruvbox-dark-hard
 
 " Lightline
 let g:lightline = {
@@ -88,12 +60,6 @@ if executable('rg')
 	set grepformat=%f:%l:%c:%m
 endif
 
-" racer + rust
-" https://github.com/rust-lang/rust.vim/issues/192
-let g:rustfmt_autosave = 1
-let g:rustfmt_emit_files = 1
-let g:rustfmt_fail_silently = 0
-
 " Completion
 " Better display for messages
 set cmdheight=2
@@ -112,12 +78,11 @@ filetype plugin indent on
 set autoindent
 set timeoutlen=300 " http://stackoverflow.com/questions/2158516/delay-before-o-opens-a-new-line
 set encoding=utf-8
-set scrolloff=4
+set scrolloff=10
 set noshowmode
 set hidden
 set nowrap
 set nojoinspaces
-let g:sneak#s_next = 1
 let g:vim_markdown_new_list_item_indent = 0
 let g:vim_markdown_auto_insert_bullets = 0
 let g:vim_markdown_frontmatter = 1
@@ -128,6 +93,7 @@ set printoptions=paper:letter
 set signcolumn=yes
 set clipboard+=unnamedplus
 set formatoptions-=cro
+set cursorline
 
 " Sane splits
 set splitright
@@ -148,17 +114,18 @@ set softtabstop=4
 set tabstop=4
 " set noexpandtab
 
-" Wrapping options
-set formatoptions=tc " wrap text and comments using textwidth
-set formatoptions+=q " enable formatting of comments with gq
-set formatoptions+=n " detect lists for formatting
-set formatoptions+=b " auto-wrap in insert mode, and do not wrap old long lines
-
 " Proper search
 set incsearch
 set ignorecase
 set smartcase
 set gdefault
+
+" Search results centered please
+nnoremap <silent> n nzz
+nnoremap <silent> N Nzz
+nnoremap <silent> * *zz
+nnoremap <silent> # #zz
+nnoremap <silent> g* g*zz
 
 " =============================================================================
 " # GUI settings
@@ -176,7 +143,7 @@ set diffopt+=iwhite " No whitespace in vimdiff
 " Make diffing better: https://vimways.org/2018/the-power-of-diff/
 set diffopt+=algorithm:patience
 set diffopt+=indent-heuristic
-set colorcolumn=80 " and give me a colored column
+set colorcolumn=100 " and give me a colored column
 set showcmd " Show (partial) command in status line.
 set mouse=a " Enable mouse usage (all modes) in terminals
 set shortmess+=c " don't give |ins-completion-menu| messages.
@@ -203,7 +170,7 @@ xnoremap <C-k> <Esc>
 cnoremap <C-k> <Esc>
 onoremap <C-k> <Esc>
 lnoremap <C-k> <Esc>
-tnoremap <C-k> <Esc>
+tnoremap <C-k> <C-\><C-n>
 
 nnoremap <C-c> <Esc>
 inoremap <C-c> <Esc>
@@ -213,17 +180,28 @@ xnoremap <C-c> <Esc>
 cnoremap <C-c> <Esc>
 onoremap <C-c> <Esc>
 lnoremap <C-c> <Esc>
-tnoremap <C-c> <Esc>
 
-" Move line up/down
-nnoremap <S-Up> :m-2<CR>
-nnoremap <S-Down> :m+<CR>
-inoremap <S-Up> <Esc>:m-2<CR>
-inoremap <S-Down> <Esc>:m+<CR>
+" Ctrl+h to stop searching
+vnoremap <C-h> :nohlsearch<cr>
+nnoremap <C-h> :nohlsearch<cr>
 
 " Jump to start and end of line using the home row keys
 map H ^
 map L $
+
+" Whole line edits
+nnoremap <C-x> dd
+inoremap <C-x> dd
+
+nnoremap <A-j> :m .+1<CR>==
+nnoremap <A-k> :m .-2<CR>==
+inoremap <A-j> <Esc>:m .+1<CR>==gi
+inoremap <A-k> <Esc>:m .-2<CR>==gi
+vnoremap <A-j> :m '>+1<CR>gv=gv
+vnoremap <A-k> :m '<-2<CR>gv=gv
+
+nnoremap <A-J> yyp
+nnoremap <A-K> yyP
 
 " No arrow keys --- force yourself to use the home row
 nnoremap <up> <nop>
@@ -239,8 +217,6 @@ nnoremap <right> :bn<CR>
 " Open hotkeys
 map <C-p> :Files<CR>
 nmap <leader>; :Buffers<CR>
-" Quick-save
-nmap <leader>w :w<CR>
 
 " <leader>s for Rg search
 noremap <leader>s :Rg
@@ -256,9 +232,6 @@ function! s:list_cmd()
   return base == '.' ? 'fd --type file --follow' : printf('fd --type file --follow | proximity-sort %s', shellescape(expand('%')))
 endfunction
 
-" Open new file adjacent to current file
-nnoremap <leader>e :e <C-R>=expand("%:p:h") . "/" <CR>
-
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " 'Smart' nevigation
 " Use tab for trigger completion with characters ahead and navigate.
@@ -273,6 +246,9 @@ function! s:check_back_space() abort
   let col = col('.') - 1
   return !col || getline('.')[col - 1]  =~# '\s'
 endfunction
+
+" Open new file adjacent to current file
+nnoremap <leader>e :e <C-R>=expand("%:p:h") . "/" <CR>
 
 " Use <c-.> to trigger completion.
 inoremap <silent><expr> <c-.> coc#refresh()
@@ -335,6 +311,9 @@ nnoremap <silent> <space>i  :call CocActionAsync('codeAction', '', 'Implement mi
 " Show actions available at this location
 nnoremap <silent> <space>a  :CocAction<cr>
 
+inoremap <silent> <M-F> :call CocAction('format')<cr>
+nnoremap <silent> <M-F> :call CocAction('format')<cr>
+
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 " <leader><leader> toggles between buffers
@@ -345,6 +324,17 @@ nnoremap <leader>, :set invlist<cr>
 
 " <leader>q shows stats
 nnoremap <leader>q g<c-g>
+
+nnoremap <leader>h :wincmd h<CR>
+nnoremap <leader>j :wincmd j<CR>
+nnoremap <leader>k :wincmd k<CR>
+nnoremap <leader>l :wincmd l<CR>
+
+
+
+map <F10> :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<'
+\ . synIDattr(synID(line("."),col("."),0),"name") . "> lo<"
+\ . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"<CR>
 
 " =============================================================================
 " # Autocommands
@@ -361,14 +351,5 @@ autocmd InsertLeave * set nopaste
 if has("autocmd")
   " https://stackoverflow.com/questions/31449496/vim-ignore-specifc-file-in-autocommand
   au BufReadPost * if expand('%:p') !~# '\m/\.git/' && line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
-endif
-
-" =============================================================================
-" # Footer
-" =============================================================================
-
-" nvim
-if has('nvim')
-	runtime! plugin/python_setup.vim
 endif
 

@@ -181,6 +181,9 @@ cnoremap <C-c> <Esc>
 onoremap <C-c> <Esc>
 lnoremap <C-c> <Esc>
 
+" Quick-save
+nmap <leader>w :w<CR>
+
 " Ctrl+h to stop searching
 vnoremap <C-h> :nohlsearch<cr>
 nnoremap <C-h> :nohlsearch<cr>
@@ -189,9 +192,7 @@ nnoremap <C-h> :nohlsearch<cr>
 map H ^
 map L $
 
-" Whole line edits
-nnoremap <C-x> dd
-inoremap <C-x> dd
+cnoremap %s/ %sm/
 
 nnoremap <A-j> :m .+1<CR>==
 nnoremap <A-k> :m .-2<CR>==
@@ -202,6 +203,10 @@ vnoremap <A-k> :m '<-2<CR>gv=gv
 
 nnoremap <A-J> yyp
 nnoremap <A-K> yyP
+
+"Make it easier to indent a visual selection several times.
+xnoremap > >gv
+xnoremap < <gv
 
 " No arrow keys --- force yourself to use the home row
 nnoremap <up> <nop>
@@ -270,6 +275,8 @@ nmap <silent> gd <Plug>(coc-definition)
 nmap <silent> gy <Plug>(coc-type-definition)
 nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
+
+noremap <silent> <Bslash> :CocCommand rust-analyzer.toggleInlayHints<cr> 
 
 " Use K to show documentation in preview window.
 nnoremap <silent> K :call <SID>show_documentation()<CR>

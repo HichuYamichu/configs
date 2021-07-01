@@ -43,25 +43,29 @@ hi CursorLineNr ctermfg=255
 
 hi Menu       ctermfg=255
 hi WildMenu   ctermfg=255 ctermbg=236 cterm=none
-hi Pmenu      ctermfg=255 ctermbg=236 
+hi Pmenu      ctermfg=255 ctermbg=233 
 hi PmenuSel   ctermfg=255 ctermbg=240
 hi PmenuSbar  ctermfg=255 ctermbg=241
 hi PmenuThumb ctermfg=255 ctermbg=236
-hi CursorLine ctermbg=236 cterm=none
+hi CursorLine ctermbg=234 cterm=none
 hi VertSplit  ctermfg=0   ctermbg=0
-hi Title      ctermfg=0   ctermbg=0
+" hi Title      ctermfg=0   ctermbg=0
 
 hi Folded     ctermfg=248 ctermbg=none cterm=bold
 hi FoldColumn ctermfg=248 ctermbg=none cterm=bold
 hi SignColumn ctermbg=none
 
-hi rustStorage    ctermfg=177
-hi rustLifetime   ctermfg=255
-hi rustSigil      ctermfg=117
-hi rustFoldBraces ctermfg=117
-hi rustModPath    ctermfg=255
-hi rustModPathSep ctermfg=255
-hi rustDerive     ctermfg=255
-hi rustAttribute  ctermfg=255
+hi rustStorage       ctermfg=177
+hi rustLifetime      ctermfg=255
+hi rustSigil         ctermfg=117
+hi rustFoldBraces    ctermfg=117
+hi rustModPath       ctermfg=255
+hi rustModPathSep    ctermfg=255
+hi rustDerive        ctermfg=255
+hi rustAttribute     ctermfg=255
+hi rustUnsafeKeyword ctermfg=177
+hi rustSelf			 ctermfg=213
 
 hi CocWarningSign  ctermfg=217
+hi CocHintSign		  ctermfg=87
+hi CocHighlightText ctermbg=235

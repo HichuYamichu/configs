@@ -1,12 +1,12 @@
 function froob -d "Froob"
-  set color00 00/00/00 # Black
+  set color00 08/08/08 # Black
   # set color01 ff/af/af # Red
   set color02 d7/87/ff # Green
   set color03 5f/87/d7 # Yellow
   set color04 87/d7/ff # Blue
   set color05 d3/81/c3 # Magenta
   set color06 5f/ff/af # Cyan
-  set color07 e0/e0/e0 # White
+  set color07 e4/e4/e4 # White
   set color08 b0/b0/b0 # Bright Black
   set color09 $color01 # Bright Red
   set color10 $color02 # Bright Green

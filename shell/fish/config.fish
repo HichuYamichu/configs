@@ -1,3 +1,4 @@
+set DISPLAY (cat /etc/resolv.conf | grep nameserver | awk '{print $2}'):0
 set EDITOR nvim
 set -U fish_user_paths /usr/local/include /usr/local/sbin /usr/local/go/bin /usr/local/bin /usr/bin /bin ~/.cargo ~/.cargo/bin ~/go/bin
 set fish_greeting

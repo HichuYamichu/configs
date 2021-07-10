@@ -6,5 +6,7 @@ cp ~/.config/nvim/colors/froob.vim ./editor/nvim/colors/froob.vim
 
 cp ~/.config/fish/config.fish ./shell/fish/config.fish
 cp ~/.config/fish/conf.d/theme.fish ./shell/fish/conf.d/theme.fish
-cp ~/.alacritty.yml ./terminal/alacritty/alacritty.yml
+cp ~/.config/alacritty/alacritty.yml ./terminal/alacritty/alacritty.yml
+cp ~/.xmonad/xmonad.hs ./wm/xmonad/xmonad.hs
+cp -r ~/.config/polybar/* ./bar/polybar/
 

@@ -1,75 +1,127 @@
-" set shell=/bin/bash
 let mapleader = "\<Space>"
+syntax on
+colorscheme froob
 
 " =============================================================================
 " # PLUGINS
 " =============================================================================
 call plug#begin('~/.vim/plugged')
 
-Plug 'editorconfig/editorconfig-vim'
 Plug 'itchyny/lightline.vim'
 Plug 'machakann/vim-highlightedyank'
-Plug 'chriskempson/base16-vim'
-
-" Fuzzy finder
+Plug 'ObserverOfTime/coloresque.vim'
 Plug 'airblade/vim-rooter'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
-
-" Semantic language support
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
-
-" Syntactic language support
+Plug 'neovim/nvim-lspconfig'
+Plug 'nvim-lua/lsp_extensions.nvim'
+Plug 'nvim-lua/completion-nvim'
+Plug 'simrat39/rust-tools.nvim'
 Plug 'cespare/vim-toml'
 Plug 'stephpy/vim-yaml'
 Plug 'rust-lang/rust.vim'
 Plug 'rhysd/vim-clang-format'
 Plug 'dag/vim-fish'
 Plug 'plasticboy/vim-markdown'
+Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
+Plug 'neovimhaskell/haskell-vim'
 
 call plug#end()
 
-syntax on
-colorscheme froob
-" colorscheme base16-gruvbox-dark-hard
+set completeopt=menuone,noinsert,noselect
+autocmd BufWritePre *.rs,*.hs lua vim.lsp.buf.formatting_sync(nil, 1000)
+
+" Configure lsp
+" https://github.com/neovim/nvim-lspconfig#rust_analyzer
+lua <<EOF
+
+local nvim_lsp = require'lspconfig'
+
+vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
+    vim.lsp.diagnostic.on_publish_diagnostics, {
+        update_in_insert = false,
+        virtual_text = false,
+        underline = false
+    }
+)
+
+local opts = {
+    tools = {
+        autoSetHints = false,
+        hover_with_actions = false,
+        inlay_hints = {
+            show_parameter_hints = false,
+            parameter_hints_prefix = "",
+            other_hints_prefix = "",
+        },
+    },
+
+    server = {}, -- rust-analyer options
+}
+
+require('rust-tools').setup(opts)
+require('rust-tools.inlay_hints').disable_inlay_hints()
+
+nvim_lsp.hls.setup{
+    settings = {
+        haskell = {
+            formattingProvider = "stylish-haskell"
+        }
+    }
+}
+EOF
+
+" Use completion-nvim in every buffer
+autocmd BufEnter * lua require'completion'.on_attach()
+
+" Use <Tab> and <S-Tab> to navigate through popup menu
+inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
+inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+
+" have a fixed column for the diagnostics to appear in
+" this removes the jitter when warnings/errors flow in
+set signcolumn=yes
+nnoremap <C-f> <cmd>lua vim.lsp.diagnostic.show_line_diagnostics({focusable = false})<CR>
+
+" Goto previous/next diagnostic warning/error
+nnoremap <silent> g[ <cmd>lua vim.lsp.diagnostic.goto_prev()<CR>
+nnoremap <silent> g] <cmd>lua vim.lsp.diagnostic.goto_next()<CR>
 
 " Lightline
 let g:lightline = {
       \ 'active': {
       \   'left': [ [ 'mode', 'paste' ],
-      \             [ 'cocstatus', 'readonly', 'filename', 'modified' ] ]
+      \             [ 'readonly', 'filename', 'modified' ] ],
+      \   'right': [ [ 'lineinfo' ],
+      \              [ 'percent' ],
+      \              [ 'fileencoding', 'filetype' ] ],
       \ },
       \ 'component_function': {
-      \   'filename': 'LightlineFilename',
-      \   'cocstatus': 'coc#status'
+      \   'filename': 'LightlineFilename'
       \ },
       \ }
 function! LightlineFilename()
   return expand('%:t') !=# '' ? @% : '[No Name]'
 endfunction
 
-" Use auocmd to force lightline update.
-autocmd User CocStatusChange,CocDiagnosticChange call lightline#update()
-
-" from http://sheerun.net/2014/03/21/how-to-boost-your-vim-productivity/
-if executable('ag')
-	set grepprg=ag\ --nogroup\ --nocolor
-endif
-if executable('rg')
-	set grepprg=rg\ --no-heading\ --vimgrep
-	set grepformat=%f:%l:%c:%m
-endif
-
-" Completion
-" Better display for messages
-set cmdheight=2
-" You will have bad experience for diagnostic messages when it's default 4000.
-set updatetime=300
-
-" Golang
+let g:highlightedyank_highlight_duration = 300
+let g:go_def_mapping_enabled = 0
 let g:go_play_open_browser = 0
 let g:go_fmt_fail_silently = 1
 let g:go_fmt_command = "goimports"
+
+" from http://sheerun.net/2014/03/21/how-to-boost-your-vim-productivity/
+if executable('ag')
+    set grepprg=ag\ --nogroup\ --nocolor
+endif
+if executable('rg')
+    set grepprg=rg\ --no-heading\ --vimgrep
+    set grepformat=%f:%l:%c:%m
+endif
+
+set cmdheight=1
+" You will have bad experience for diagnostic messages when it's default 4000.
+set updatetime=300
 
 " =============================================================================
 " # Editor settings
@@ -81,7 +133,6 @@ set encoding=utf-8
 set scrolloff=10
 set noshowmode
 set hidden
-set nowrap
 set nojoinspaces
 let g:vim_markdown_new_list_item_indent = 0
 let g:vim_markdown_auto_insert_bullets = 0
@@ -112,7 +163,7 @@ set wildignore=.hg,.svn,*~,*.png,*.jpg,*.gif,*.settings,Thumbs.db,*.min.js,*.swp
 set shiftwidth=4
 set softtabstop=4
 set tabstop=4
-" set noexpandtab
+set expandtab
 
 " Proper search
 set incsearch
@@ -131,6 +182,7 @@ nnoremap <silent> g* g*zz
 " # GUI settings
 " =============================================================================
 set guioptions-=T " Remove toolbar
+set guicursor=
 set vb t_vb= " No more beeps
 set nofoldenable
 set ttyfast
@@ -156,11 +208,27 @@ set listchars=nbsp:¬,extends:»,precedes:«,trail:•
 " # Keyboard shortcuts
 " =============================================================================
 
+inoremap , ,<C-g>u
+inoremap . .<C-g>u
+inoremap ! !<C-g>u
+inoremap ? ?<C-g>u
+
+imap <C-v> <C-r><C-p>+
+cmap <C-v> <C-r>"
+
 " Ctrl+c and Ctrl+j as Esc
 " Ctrl-j is a little awkward unfortunately:
 " https://github.com/neovim/neovim/issues/5916
 " So we also map Ctrl+k
+nnoremap <C-j> <Esc>
 inoremap <C-j> <Esc>
+vnoremap <C-j> <Esc>
+snoremap <C-j> <Esc>
+xnoremap <C-j> <Esc>
+cnoremap <C-j> <C-c>
+onoremap <C-j> <Esc>
+lnoremap <C-j> <Esc>
+tnoremap <C-j> <Esc>
 
 nnoremap <C-k> <Esc>
 inoremap <C-k> <Esc>
@@ -184,25 +252,22 @@ lnoremap <C-c> <Esc>
 " Quick-save
 nmap <leader>w :w<CR>
 
-" Ctrl+h to stop searching
-vnoremap <C-h> :nohlsearch<cr>
-nnoremap <C-h> :nohlsearch<cr>
-
 " Jump to start and end of line using the home row keys
-map H ^
-map L $
+map <C-h> 0
+map <C-l> $
+
+vnoremap H b 
+nnoremap H b
+
+vnoremap L e 
+nnoremap L e
+
+nnoremap J :m .+1<CR>==
+nnoremap K :m .-2<CR>==
+vnoremap J :m '>+1<CR>gv=gv
+vnoremap K :m '<-2<CR>gv=gv
 
 cnoremap %s/ %sm/
-
-nnoremap <A-j> :m .+1<CR>==
-nnoremap <A-k> :m .-2<CR>==
-inoremap <A-j> <Esc>:m .+1<CR>==gi
-inoremap <A-k> <Esc>:m .-2<CR>==gi
-vnoremap <A-j> :m '>+1<CR>gv=gv
-vnoremap <A-k> :m '<-2<CR>gv=gv
-
-nnoremap <A-J> yyp
-nnoremap <A-K> yyP
 
 "Make it easier to indent a visual selection several times.
 xnoremap > >gv
@@ -221,7 +286,7 @@ nnoremap <right> :bn<CR>
 
 " Open hotkeys
 map <C-p> :Files<CR>
-nmap <leader>; :Buffers<CR>
+nmap <C-o> :Buffers<CR>
 
 " <leader>s for Rg search
 noremap <leader>s :Rg
@@ -237,91 +302,10 @@ function! s:list_cmd()
   return base == '.' ? 'fd --type file --follow' : printf('fd --type file --follow | proximity-sort %s', shellescape(expand('%')))
 endfunction
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" 'Smart' nevigation
-" Use tab for trigger completion with characters ahead and navigate.
-" NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
-" other plugin before putting this into your config.
-inoremap <silent><expr> <TAB>
-      \ pumvisible() ? "\<C-n>" :
-      \ <SID>check_back_space() ? "\<TAB>" :
-      \ coc#refresh()
-
-function! s:check_back_space() abort
-  let col = col('.') - 1
-  return !col || getline('.')[col - 1]  =~# '\s'
-endfunction
-
 " Open new file adjacent to current file
 nnoremap <leader>e :e <C-R>=expand("%:p:h") . "/" <CR>
 
-" Use <c-.> to trigger completion.
-inoremap <silent><expr> <c-.> coc#refresh()
-
-" Use <cr> to confirm completion, `<C-g>u` means break undo chain at current
-" position. Coc only does snippet and additional edit on confirm.
-if exists('*complete_info')
-  inoremap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" : "\<C-g>u\<CR>"
-else
-  imap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
-endif
-
-" Use `[g` and `]g` to navigate diagnostics
-nmap <silent> [g <Plug>(coc-diagnostic-prev)
-nmap <silent> ]g <Plug>(coc-diagnostic-next)
-
-" GoTo code navigation.
-nmap <silent> gd <Plug>(coc-definition)
-nmap <silent> gy <Plug>(coc-type-definition)
-nmap <silent> gi <Plug>(coc-implementation)
-nmap <silent> gr <Plug>(coc-references)
-
-noremap <silent> <Bslash> :CocCommand rust-analyzer.toggleInlayHints<cr> 
-
-" Use K to show documentation in preview window.
-nnoremap <silent> K :call <SID>show_documentation()<CR>
-
-function! s:show_documentation()
-  if (index(['vim','help'], &filetype) >= 0)
-    execute 'h '.expand('<cword>')
-  else
-    call CocAction('doHover')
-  endif
-endfunction
-
-" Highlight the symbol and its references when holding the cursor.
-autocmd CursorHold * silent call CocActionAsync('highlight')
-
-" Symbol renaming.
-nmap <leader>rn <Plug>(coc-rename)
-
-" Introduce function text object
-" NOTE: Requires 'textDocument.documentSymbol' support from the language server.
-xmap if <Plug>(coc-funcobj-i)
-xmap af <Plug>(coc-funcobj-a)
-omap if <Plug>(coc-funcobj-i)
-omap af <Plug>(coc-funcobj-a)
-
-" Use <TAB> for selections ranges.
-nmap <silent> <TAB> <Plug>(coc-range-select)
-xmap <silent> <TAB> <Plug>(coc-range-select)
-
-" Find symbol of current document.
-nnoremap <silent> <space>o  :<C-u>CocList outline<cr>
-
-" Search workspace symbols.
-nnoremap <silent> <space>s  :<C-u>CocList -I symbols<cr>
-
-" Implement methods for trait
-nnoremap <silent> <space>i  :call CocActionAsync('codeAction', '', 'Implement missing members')<cr>
-
-" Show actions available at this location
-nnoremap <silent> <space>a  :CocAction<cr>
-
-inoremap <silent> <M-F> :call CocAction('format')<cr>
-nnoremap <silent> <M-F> :call CocAction('format')<cr>
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+noremap <silent> <Bslash> :RustToggleInlayHints<cr> 
 
 " <leader><leader> toggles between buffers
 nnoremap <leader><leader> <c-^>
@@ -329,15 +313,10 @@ nnoremap <leader><leader> <c-^>
 " <leader>, shows/hides hidden characters
 nnoremap <leader>, :set invlist<cr>
 
-" <leader>q shows stats
-nnoremap <leader>q g<c-g>
-
 nnoremap <leader>h :wincmd h<CR>
 nnoremap <leader>j :wincmd j<CR>
 nnoremap <leader>k :wincmd k<CR>
 nnoremap <leader>l :wincmd l<CR>
-
-
 
 map <F10> :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<'
 \ . synIDattr(synID(line("."),col("."),0),"name") . "> lo<"
@@ -349,7 +328,6 @@ map <F10> :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans
 
 " Prevent accidental writes to buffers that shouldn't be edited
 autocmd BufRead *.orig set readonly
-autocmd BufRead *.pacnew set readonly
 
 " Leave paste mode when leaving insert mode
 autocmd InsertLeave * set nopaste

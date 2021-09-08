@@ -35,11 +35,12 @@ hi Typedef        ctermfg=254
 hi Delimiter      ctermfg=117
 hi SpecialComment ctermfg=60
 
-hi ColorColumn  ctermbg=242
+hi ColorColumn  ctermbg=236
 hi LineNr       ctermfg=243
 hi LineNrAbove  ctermfg=243
 hi LineNrBelow  ctermfg=243
 hi CursorLineNr ctermfg=254
+hi CursorLine ctermbg=233 cterm=none
 
 hi Menu       ctermfg=254
 hi WildMenu   ctermfg=254 ctermbg=236 cterm=none
@@ -47,13 +48,14 @@ hi Pmenu      ctermfg=254 ctermbg=233
 hi PmenuSel   ctermfg=254 ctermbg=240
 hi PmenuSbar  ctermfg=254 ctermbg=241
 hi PmenuThumb ctermfg=254 ctermbg=236
-hi CursorLine ctermbg=234 cterm=none
 hi VertSplit  ctermfg=0   ctermbg=0
-" hi Title      ctermfg=0   ctermbg=0
+hi MatchParen ctermfg=0   ctermbg=red
 
 hi Folded     ctermfg=248 ctermbg=none cterm=bold
 hi FoldColumn ctermfg=248 ctermbg=none cterm=bold
 hi SignColumn ctermbg=none
+
+hi NvimInternalError ctermfg=254
 
 hi rustStorage       ctermfg=177
 hi rustLifetime      ctermfg=254
@@ -66,7 +68,13 @@ hi rustAttribute     ctermfg=254
 hi rustUnsafeKeyword ctermfg=177
 hi rustSelf			 ctermfg=213
 
-hi CocWarningSign  ctermfg=217
-hi CocHintSign		  ctermfg=87
-hi CocHighlightText ctermbg=235
+hi haskellOperators  ctermfg=117
+hi haskellWhere      ctermfg=177
 
+hi LspDiagnosticsDefaultError ctermfg=red
+hi LspDiagnosticsUnderlineError cterm=none ctermfg=none
+hi LspDiagnosticsUnderlineHint cterm=none ctermfg=none
+hi LspDiagnosticsUnderlineWarning cterm=none ctermfg=none
+hi LspDiagnosticsUnderlineInformation cterm=none ctermfg=none
+hi LspDIagnosticsDefaultWarning ctermfg=208
+hi LspDIagnosticsDefaultHint ctermfg=60

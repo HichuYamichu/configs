@@ -176,8 +176,8 @@ font:
 colors:
   # Default colors
   primary:
-    background: '#1d2021'
-    foreground: '#d5c4a1'
+    background: '#080808'
+    foreground: '#e4e4e4'
 
     # Bright and dim foreground colors
     #
@@ -214,25 +214,25 @@ colors:
 
   # Normal colors
   normal:
-    black:   '#1d2021'
-    red:     '#fb4934'
-    green:   '#b8bb26'
-    yellow:  '#fabd2f'
-    blue:    '#83a598'
-    magenta: '#d3869b'
-    cyan:    '#8ec07c'
-    white:   '#d5c4a1'
+    black:   '#080808' # OK
+    red:     '#ff5f87' # OK
+    green:   '#d787ff' # OK
+    yellow:  '#5fffaf' # OK
+    blue:    '#87d7ff' # OK
+    magenta: '#ff875f'
+    cyan:    '#ffff87'
+    white:   '#e4e4e4' # OK
 
   # Bright colors
   bright:
-    black:   '#665c54'
-    red:     '#fb4934'
-    green:   '#b8bb26'
-    yellow:  '#fabd2f'
-    blue:    '#83a598'
-    magenta: '#d3869b'
-    cyan:    '#8ec07c'
-    white:   '#fbf1c7'
+    black:   '#5f5f87' # OK
+    red:     '#fc328e' # OK
+    green:   '#af00d7'
+    yellow:  '#afff5f'
+    blue:    '#00afff'
+    magenta: '#ff8700'
+    cyan:    '#ffff5f'
+    white:   '#ffffff'
 
   # Dim colors
   #
@@ -256,13 +256,13 @@ colors:
   # Example:
   #   `- { index: 16, color: '#ff00ff' }`
   #
-  indexed_colors:
-    - { index: 16, color: '#fe8019' }
-    - { index: 17, color: '#d65d0e' }
-    - { index: 18, color: '#3c3836' }
-    - { index: 19, color: '#504945' }
-    - { index: 20, color: '#bdae93' }
-    - { index: 21, color: '#ebdbb2' }
+  # indexed_colors:
+  #   - { index: 16, color: '#fe8019' }
+  #   - { index: 17, color: '#d65d0e' }
+  #   - { index: 18, color: '#3c3836' }
+  #   - { index: 19, color: '#504945' }
+  #   - { index: 20, color: '#bdae93' }
+  #   - { index: 21, color: '#ebdbb2' }
 
 # Visual Bell
 #

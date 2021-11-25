@@ -5,7 +5,9 @@ cp /home/hy/.config/bottom/* ./bottom/
 cp /home/hy/.config/calcurse/* ./calcurse/
 cp -r /home/hy/.config/fish .
 cp /home/hy/.config/fontconfig/* ./fontconfig/
-cp -r /home/hy/.config/nvim .
+cp /home/hy/.config/nvim/init.lua ./nvim/init.lua
+cp /home/hy/.config/nvim/b.vim ./nvim/b.vim
+cp -r /home/hy/.config/nvim/colors ./nvim/colors
 cp /home/hy/.config/picom/* ./picom/
 cp -r /home/hy/.config/rofi .
 cp /home/hy/.config/taffybar/* ./taffybar/

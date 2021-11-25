@@ -13,7 +13,6 @@ abbr -a time hyperfine
 abbr -a ps procs
 abbr -a top btm
 abbr -a vim nvim
-abbr -a code code-insiders .
 abbr -a cat bat --paging=never
 abbr -a sed sd
 abbr -a xdeb xdeb -Sde

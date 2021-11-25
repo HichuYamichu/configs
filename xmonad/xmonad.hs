@@ -262,7 +262,7 @@ myManageHook =
         className =? "Microsoft Word" --> doFloat,
         resource =? "desktop_window" --> doIgnore,
         resource =? "kdesktop" --> doIgnore,
-        isDialog --> doFloat,
+        isDialog --> doCenterFloat,
         isFullscreen --> doFullFloat,
         transience'
       ]

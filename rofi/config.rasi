@@ -1,4 +1,6 @@
+/** Basic config file **/
+
 configuration {
-	theme: "~/.config/rofi/themes/sidetab.rasi";
-    show-icons:         false;
+  show-icons:         true;
+  icon-theme:         "Papirus";
 }

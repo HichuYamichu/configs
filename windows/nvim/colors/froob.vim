@@ -39,8 +39,9 @@ hi ColorColumn  ctermbg=236
 hi LineNr       ctermfg=243
 hi LineNrAbove  ctermfg=243
 hi LineNrBelow  ctermfg=243
-hi CursorLineNr ctermfg=254
+hi CursorLineNr ctermfg=254 cterm=none
 hi CursorLine ctermbg=233 cterm=none
+hi Cursor       ctermbg=161
 
 hi Menu       ctermfg=254
 hi WildMenu   ctermfg=254 ctermbg=236 cterm=none

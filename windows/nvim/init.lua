@@ -50,6 +50,8 @@ require("lazy").setup({
     'saadparwaiz1/cmp_luasnip',
 })
 
+cmd([[set fillchars+=vert:\ ]])
+cmd([[autocmd FileType netrw autocmd BufLeave <buffer> if &filetype == 'netrw' | :bd | endif]])
 cmd([[filetype plugin indent on]])
 cmd('colorscheme froob')
 cmd([[au BufEnter * set fo-=c fo-=r fo-=o]])
@@ -75,9 +77,8 @@ local cmp = require 'cmp'
 
 cmp.setup({
     snippet = {
-        -- REQUIRED - you must specify a snippet engine
         expand = function(args)
-            require('luasnip').lsp_expand(args.body) -- For `luasnip` users.
+            require('luasnip').lsp_expand(args.body)
         end
     },
     window = {
@@ -85,15 +86,15 @@ cmp.setup({
         documentation = cmp.config.window.bordered()
     },
     mapping = {
-        ['<C-y>'] = cmp.config.disable, -- Specify `cmp.config.disable` if you want to remove the default `<C-y>` mapping.
+        ['<C-y>'] = cmp.config.disable,
         ['<TAB>'] = cmp.mapping.confirm({
             behavior = cmp.ConfirmBehavior.Insert,
             select = true
         }),
-        -- ['<CR>'] = cmp.mapping.confirm({
-        --     behavior = cmp.ConfirmBehavior.Insert,
-        --     select = true
-        -- }),
+        ['<CR>'] = cmp.mapping.confirm({
+            behavior = cmp.ConfirmBehavior.Insert,
+            select = false
+        }),
         ['<C-b>'] = cmp.mapping.scroll_docs(-4),
         ['<C-f>'] = cmp.mapping.scroll_docs(4),
         ['<Down>'] = cmp.mapping({
@@ -176,24 +177,23 @@ local on_attach = function(client, bufnr)
     buf_set_keymap('n', '<leader>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
     buf_set_keymap('n', '<leader>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
     buf_set_keymap('n', '<leader>f', '<cmd>lua vim.lsp.buf.format()<CR>', opts)
-    buf_set_keymap('n', '<Leader>a', '<cmd>lua vim.diagnostic.open_float()<CR>', opts)
+    buf_set_keymap('n', '<leader>g', '<cmd>lua vim.diagnostic.open_float()<CR>', opts)
+    buf_set_keymap('n', '<leader>i', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
     buf_set_keymap('n', '<C-n>', '<cmd>lua vim.diagnostic.disable()<CR>', opts)
     buf_set_keymap('n', '<C-m>', '<cmd>lua vim.diagnostic.enable()<CR>', opts)
-    -- buf_set_keymap('n', '<C-.>', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts) -- Unusable
 end
 
-vim.diagnostic.config({ float = { border = "rounded" } })
+vim.api.nvim_create_autocmd("LspAttach", {
+    group = vim.api.nvim_create_augroup("UserLspConfig", {}),
+    callback = function(args)
+        local client = vim.lsp.get_client_by_id(args.data.client_id)
+        if client.server_capabilities.inlayHintProvider then
+            vim.lsp.inlay_hint.enable(args.buf, false)
+        end
+    end
+})
 
-require('lspconfig').hls.setup {
-    on_attach = on_attach,
-    cmd = { "haskell-language-server-wrapper", "--lsp" },
-    filetypes = { "haskell", "lhaskell" },
-    settings = {
-        haskell = {
-            formattingProvider = "brittany"
-        }
-    }
-}
+vim.diagnostic.config({ float = { border = "rounded" } })
 
 require('lspconfig').tsserver.setup {
     on_attach = on_attach
@@ -216,6 +216,11 @@ require('lspconfig').rust_analyzer.setup {
                     enable = false
                 }
             }
+        },
+        inlayHints = {
+            chainingHints = true,
+            parameterHints = true,
+            typeHints = true
         }
     }
 }
@@ -234,39 +239,6 @@ vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(vim.lsp.diagn
 })
 
 vim.api.nvim_set_hl(0, '@lsp.type.macro.rust', {})
-
-local function goto_definition(split_cmd)
-    local util = vim.lsp.util
-    local log = require("vim.lsp.log")
-    local api = vim.api
-
-    local handler = function(_, result, ctx)
-        if result == nil or vim.tbl_isempty(result) then
-            local _ = log.info() and log.info(ctx.method, "No location found")
-            return nil
-        end
-
-        if split_cmd then
-            vim.cmd(split_cmd)
-        end
-
-        if vim.tbl_islist(result) then
-            util.jump_to_location(result[1])
-
-            if #result > 1 then
-                util.set_qflist(util.locations_to_items(result))
-                api.nvim_command("copen")
-                api.nvim_command("wincmd p")
-            end
-        else
-            util.jump_to_location(result)
-        end
-    end
-
-    return handler
-end
-
-vim.lsp.handlers["textDocument/definition"] = goto_definition('vs')
 
 vim.o.completeopt = 'menu,menuone,noselect'
 g.mapleader = " "
@@ -314,15 +286,22 @@ opt.colorcolumn = '100'
 opt.showcmd = true
 opt.mouse = 'a'
 
-map('i', ',', ',<C-g>u', { noremap = true })
-map('i', '.', '.<C-g>u', { noremap = true })
-map('i', '!', '!<C-g>u', { noremap = true })
-map('i', '?', '?<C-g>u', { noremap = true })
-map('i', ' ', ' <C-g>u', { noremap = true })
+_G.inlay_hints_enabled = false
+function ToggleInlayHints()
+    _G.inlay_hints_enabled = not _G.inlay_hints_enabled
+    vim.lsp.inlay_hint.enable(0, _G.inlay_hints_enabled)
+end
+
+map('n', '<leader>o', ':lua ToggleInlayHints()<CR>', default_opts)
+map('n', '<leader>p', '<C-w>', { noremap = true })
+
+map('i', ',', ',<C-g>u', default_opts)
+map('i', '.', '.<C-g>u', default_opts)
+map('i', '!', '!<C-g>u', default_opts)
+map('i', '?', '?<C-g>u', default_opts)
+map('i', ' ', ' <C-g>u', default_opts)
 
 map('i', '<C-z>', '<C-g>u<C-O>u', { noremap = true })
--- map('i', '<C-v>', '<C-r><C-p>+', default_opts)
--- map('c', '<C-v>', '<C-r>"', default_opts)
 map('v', 'p', '"_dP', default_opts)
 
 map('n', '<C-j>', '<Esc>', { noremap = true })
@@ -349,6 +328,7 @@ map('v', '<C-c>', 'y', { noremap = true })
 
 map('n', '<leader>w', ':w<CR>', default_opts)
 map('n', '<leader>q', ':q<CR>', default_opts)
+map('n', '<leader>a', ':bd<CR>', default_opts)
 
 map('n', '<q>', '<C-v', default_opts)
 
@@ -378,7 +358,7 @@ map('', '<C-p>', ':Files<CR>', { noremap = true })
 map('', '<C-o>', ':Buffers<CR>', { noremap = true })
 
 map('n', '<leader>s', ':Rg<CR>', { noremap = true })
-map('n', '<leader>e', ':e <C-R>=expand("%:p:h") . "\\" <CR>', { noremap = true })
+map('n', '<leader>e', ':e <C-R>=expand("%:p:h") . "\" <CR>', { noremap = true })
 map('n', '<leader><leader>', '<c-^>', { noremap = true })
 
 map('n', '<leader>j', ':wincmd j<CR>', { noremap = true })
@@ -386,6 +366,4 @@ map('n', '<leader>h', ':wincmd h<CR>', { noremap = true })
 map('n', '<leader>k', ':wincmd k<CR>', { noremap = true })
 map('n', '<leader>l', ':wincmd l<CR>', { noremap = true })
 
--- map('n', '<C-u>', '<C-u>zz', default_opts)
--- map('n', '<C-d>', '<C-d>zz', default_opts)
 map('n', '<C-a>', ':%', { noremap = true })

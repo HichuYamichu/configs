@@ -6,7 +6,7 @@ endif
 
 let g:colors_name="Froob"
 
-hi Normal     ctermfg=254 
+hi Normal ctermbg=None
 hi Comment    ctermfg=60
 hi Constant   ctermfg=254
 hi Identifier ctermfg=254
